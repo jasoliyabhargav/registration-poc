@@ -14,6 +14,7 @@ import { RootStackParamList, LoginFormData } from '../types';
 import { validationRules } from '../utils/validation';
 import { useForm } from '../hooks/useForm';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { secureStorageService } from '../services/secureStorageService';
 import { authenticationService } from '../services/authenticationService';
 import CustomInput from '../components/CustomInput';
@@ -27,6 +28,7 @@ interface Props {
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { login, authState } = useAuth();
+  const { colors } = useTheme();
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [lockoutTimeRemaining, setLockoutTimeRemaining] = useState(0);
 
@@ -235,7 +237,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const isLocked = authState.isLocked && lockoutTimeRemaining > 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -248,8 +250,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
-            <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to your account</Text>
+            <Text style={[styles.title, { color: colors.text }]}>Welcome Back</Text>
+            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Sign in to your account</Text>
           </View>
 
           {isLocked && (
@@ -317,7 +319,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             <View style={styles.registerLinkContainer}>
-              <Text style={styles.registerLinkText}>Don't have an account? </Text>
+              <Text style={[styles.registerLinkText, { color: colors.textSecondary }]}>Don't have an account? </Text>
               <CustomButton
                 title="Create one here"
                 onPress={navigateToRegistration}

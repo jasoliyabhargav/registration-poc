@@ -14,6 +14,7 @@ import { RootStackParamList, RegistrationFormData } from '../types';
 import { validationRules } from '../utils/validation';
 import { useForm } from '../hooks/useForm';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 
@@ -28,6 +29,7 @@ interface Props {
 
 const RegistrationScreen: React.FC<Props> = ({ navigation }) => {
   const { register } = useAuth();
+  const { colors } = useTheme();
   const [showSuccess, setShowSuccess] = useState(false);
 
   const {
@@ -109,11 +111,11 @@ const RegistrationScreen: React.FC<Props> = ({ navigation }) => {
 
   if (showSuccess) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.successContainer}>
           <Text style={styles.successIcon}>✓</Text>
-          <Text style={styles.successTitle}>Success!</Text>
-          <Text style={styles.successMessage}>
+          <Text style={[styles.successTitle, { color: colors.text }]}>Success!</Text>
+          <Text style={[styles.successMessage, { color: colors.textSecondary }]}>
             Your account has been created successfully.
           </Text>
         </View>
@@ -122,7 +124,7 @@ const RegistrationScreen: React.FC<Props> = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -135,7 +137,7 @@ const RegistrationScreen: React.FC<Props> = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
-            <Text style={styles.title}>Account setup</Text>
+            <Text style={[styles.title, { color: colors.text }]}>Account setup</Text>
           </View>
 
           <View style={styles.form}>
@@ -213,7 +215,7 @@ const RegistrationScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             <View style={styles.loginLinkContainer}>
-              <Text style={styles.loginLinkText}>Already registered? </Text>
+              <Text style={[styles.loginLinkText, { color: colors.textSecondary }]}>Already registered? </Text>
               <CustomButton
                 title="Sign in here"
                 onPress={navigateToLogin}

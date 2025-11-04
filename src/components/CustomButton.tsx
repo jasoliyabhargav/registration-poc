@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface CustomButtonProps {
   title: string;
@@ -33,18 +34,34 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   accessibilityLabel,
   accessibilityHint,
 }) => {
+  const { colors } = useTheme();
   const isDisabled = disabled || loading;
+
+  // Dynamic color overrides
+  const dynamicButtonStyles = {
+    primary: { backgroundColor: colors.primary },
+    secondary: { backgroundColor: colors.surface, borderColor: colors.border },
+    outline: { borderColor: colors.primary, backgroundColor: 'transparent' },
+    text: { backgroundColor: 'transparent' },
+  };
+
+  const dynamicTextStyles = {
+    primary: { color: colors.buttonText },
+    secondary: { color: colors.text },
+    outline: { color: colors.primary },
+    text: { color: colors.primary },
+  };
 
   const buttonStyles = [
     styles.button,
     size === 'small' && styles.buttonSmall,
     size === 'medium' && styles.buttonMedium,
     size === 'large' && styles.buttonLarge,
-    variant === 'primary' && styles.buttonPrimary,
-    variant === 'secondary' && styles.buttonSecondary,
-    variant === 'outline' && styles.buttonOutline,
-    variant === 'text' && styles.buttonText,
-    isDisabled && styles.buttonDisabled,
+    variant === 'primary' && { ...styles.buttonPrimary, ...dynamicButtonStyles.primary },
+    variant === 'secondary' && { ...styles.buttonSecondary, ...dynamicButtonStyles.secondary },
+    variant === 'outline' && { ...styles.buttonOutline, ...dynamicButtonStyles.outline },
+    variant === 'text' && { ...styles.buttonText, ...dynamicButtonStyles.text },
+    isDisabled && { ...styles.buttonDisabled, backgroundColor: colors.buttonDisabled },
     style,
   ];
 
@@ -53,11 +70,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     size === 'small' && styles.textSmall,
     size === 'medium' && styles.textMedium,
     size === 'large' && styles.textLarge,
-    variant === 'primary' && styles.textPrimary,
-    variant === 'secondary' && styles.textSecondary,
-    variant === 'outline' && styles.textOutline,
-    variant === 'text' && styles.textText,
-    isDisabled && styles.textDisabled,
+    variant === 'primary' && { ...styles.textPrimary, ...dynamicTextStyles.primary },
+    variant === 'secondary' && { ...styles.textSecondary, ...dynamicTextStyles.secondary },
+    variant === 'outline' && { ...styles.textOutline, ...dynamicTextStyles.outline },
+    variant === 'text' && { ...styles.textText, ...dynamicTextStyles.text },
+    isDisabled && { ...styles.textDisabled, color: colors.buttonDisabledText },
     textStyle,
   ];
 

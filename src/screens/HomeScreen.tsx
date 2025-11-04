@@ -8,10 +8,12 @@ import {
   Alert,
 } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme, ThemeMode } from '../contexts/ThemeContext';
 import CustomButton from '../components/CustomButton';
 
 const HomeScreen: React.FC = () => {
   const { authState, logout } = useAuth();
+  const { mode, isDark, colors, setTheme } = useTheme();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = () => {
@@ -46,6 +48,23 @@ const HomeScreen: React.FC = () => {
     }
   };
 
+  const handleThemeChange = (newMode: ThemeMode) => {
+    setTheme(newMode);
+  };
+
+  const getThemeModeDisplayName = (themeMode: ThemeMode): string => {
+    switch (themeMode) {
+      case 'light':
+        return 'Light';
+      case 'dark':
+        return 'Dark';
+      case 'system':
+        return 'System';
+      default:
+        return 'System';
+    }
+  };
+
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
@@ -71,74 +90,111 @@ const HomeScreen: React.FC = () => {
     );
   }
 
+  const dynamicStyles = createDynamicStyles(colors);
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.welcomeText}>Welcome,</Text>
-          <Text style={styles.nameText}>
+          <Text style={[styles.welcomeText, { color: colors.textSecondary }]}>Welcome,</Text>
+          <Text style={[styles.nameText, { color: colors.text }]}>
             {user.firstName} {user.lastName}
           </Text>
         </View>
 
-        <View style={styles.profileCard}>
-          <Text style={styles.cardTitle}>Profile Information</Text>
+        <View style={[styles.profileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.cardTitle, { color: colors.text, borderBottomColor: colors.separator }]}>Profile Information</Text>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Full Name</Text>
-            <Text style={styles.infoValue}>
+          <View style={[styles.infoRow, { borderBottomColor: colors.separator }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Full Name</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>
               {user.firstName} {user.lastName}
             </Text>
           </View>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Email Address</Text>
-            <Text style={styles.infoValue}>{user.email}</Text>
+          <View style={[styles.infoRow, { borderBottomColor: colors.separator }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Email Address</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>{user.email}</Text>
           </View>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Phone Number</Text>
-            <Text style={styles.infoValue}>{user.phoneNumber}</Text>
+          <View style={[styles.infoRow, { borderBottomColor: colors.separator }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Phone Number</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>{user.phoneNumber}</Text>
           </View>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Member Since</Text>
-            <Text style={styles.infoValue}>{formatDate(user.createdAt)}</Text>
+          <View style={[styles.infoRow, { borderBottomColor: colors.separator }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Member Since</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>{formatDate(user.createdAt)}</Text>
           </View>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>User ID</Text>
-            <Text style={styles.infoValue}>{user.id}</Text>
+          <View style={[styles.infoRow, { borderBottomColor: colors.separator }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>User ID</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>{user.id}</Text>
           </View>
         </View>
 
-        <View style={styles.securityCard}>
-          <Text style={styles.cardTitle}>Security Information</Text>
+        <View style={[styles.securityCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.cardTitle, { color: colors.text, borderBottomColor: colors.separator }]}>Security Information</Text>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Account Status</Text>
+          <View style={[styles.infoRow, { borderBottomColor: colors.separator }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Account Status</Text>
             <Text style={[styles.infoValue, styles.statusActive]}>Active</Text>
           </View>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Failed Login Attempts</Text>
-            <Text style={styles.infoValue}>
+          <View style={[styles.infoRow, { borderBottomColor: colors.separator }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Failed Login Attempts</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>
               {authState.failedAttempts} of 5
             </Text>
           </View>
 
           {authState.isLocked && authState.lockoutUntil && (
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Account Locked Until</Text>
+            <View style={[styles.infoRow, { borderBottomColor: colors.separator }]}>
+              <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Account Locked Until</Text>
               <Text style={[styles.infoValue, styles.statusLocked]}>
                 {new Date(authState.lockoutUntil).toLocaleString()}
               </Text>
             </View>
           )}
+        </View>
+
+        <View style={[styles.profileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.cardTitle, { color: colors.text }]}>App Settings</Text>
+
+          <View style={styles.infoRow}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Theme Mode</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>
+              {getThemeModeDisplayName(mode)} {isDark ? '🌙' : '☀️'}
+            </Text>
+          </View>
+
+          <View style={styles.themeButtonsContainer}>
+            <CustomButton
+              title="Light"
+              onPress={() => handleThemeChange('light')}
+              variant={mode === 'light' ? 'primary' : 'outline'}
+              size="small"
+              style={[styles.themeButton, { borderColor: colors.border }]}
+            />
+            <CustomButton
+              title="Dark"
+              onPress={() => handleThemeChange('dark')}
+              variant={mode === 'dark' ? 'primary' : 'outline'}
+              size="small"
+              style={[styles.themeButton, { borderColor: colors.border }]}
+            />
+            <CustomButton
+              title="System"
+              onPress={() => handleThemeChange('system')}
+              variant={mode === 'system' ? 'primary' : 'outline'}
+              size="small"
+              style={[styles.themeButton, { borderColor: colors.border }]}
+            />
+          </View>
         </View>
 
         <View style={styles.actionsContainer}>
@@ -155,7 +211,7 @@ const HomeScreen: React.FC = () => {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
+          <Text style={[styles.footerText, { color: colors.textSecondary }]}>
             This is a demo application for account registration and authentication.
           </Text>
         </View>
@@ -285,6 +341,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#DC3545',
     textAlign: 'center',
+  },
+  themeButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+    gap: 8,
+  },
+  themeButton: {
+    flex: 1,
+    marginHorizontal: 2,
+  },
+});
+
+const createDynamicStyles = (colors: any) => StyleSheet.create({
+  text: {
+    color: colors.text,
+  },
+  textSecondary: {
+    color: colors.textSecondary,
+  },
+  card: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
   },
 });
 

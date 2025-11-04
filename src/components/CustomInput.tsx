@@ -8,6 +8,7 @@ import {
   TextInputProps,
 } from 'react-native';
 import { FieldError } from '../types';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface CustomInputProps extends Omit<TextInputProps, 'style'> {
   label: string;
@@ -31,6 +32,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   labelStyle,
   ...props
 }) => {
+  const { colors } = useTheme();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -41,15 +43,20 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <Text style={[styles.label, labelStyle, hasError && styles.labelError]}>
+      <Text style={[styles.label, { color: colors.textSecondary }, labelStyle, hasError && styles.labelError]}>
         {label}
         {required && <Text style={styles.required}> *</Text>}
       </Text>
 
-      <View style={[styles.inputContainer, hasError && styles.inputContainerError]}>
+      <View style={[
+        styles.inputContainer,
+        { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder },
+        hasError && styles.inputContainerError
+      ]}>
         <TextInput
           {...props}
-          style={[styles.input, inputStyle]}
+          style={[styles.input, { color: colors.inputText }, inputStyle]}
+          placeholderTextColor={colors.placeholder}
           secureTextEntry={secureTextEntry && !isPasswordVisible}
           autoCapitalize="none"
           autoCorrect={false}
